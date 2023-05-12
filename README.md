@@ -1,8 +1,8 @@
 ## Overview 
 
-Python Implementation of the _L_* algorithm by [Angluin (1987)](https://people.eecs.berkeley.edu/~dawnsong/teaching/s10/papers/angluin87.pdf): <i>Learning Regular Sets from Queries and Counterexamples</i>. During learning, the _L_* algorithm only has access to two external resources: the alphabet Σ of an unknown regular language _L_* and a teacher _T_ capable of answering two types of queries. One is the _membership query_ regarding whether a given string _w_ belongs to _L_*. The other is the _equivalence query_ regarding whether a proposed DFA accepts _L_. If T rejects the proposed DFA, it returns a counterexample to the learner to refine its proposal.
+Python Implementation of the _L_* algorithm by [Angluin (1987)](https://people.eecs.berkeley.edu/~dawnsong/teaching/s10/papers/angluin87.pdf): <i>Learning Regular Sets from Queries and Counterexamples</i>. During learning, the _L_* algorithm only has access to two external resources: the alphabet Σ of an unknown regular language _L_ and a teacher _T_ capable of answering two types of queries. One is the _membership query_ regarding whether a given string _w_ belongs to _L_. The other is the _equivalence query_ regarding whether a proposed DFA accepts _L_. If T rejects the proposed DFA, it returns a counterexample to the learner to refine its proposal.
 
-The implementation here, however, only assumes a black box teacher _T_ that can only answer membership queries. As a result, _T_ can be any arbitrary function that takes a string as input and returns True if the string is accepted by the target language or False otherwise. Counterexamples are found through exhaustive search within a finite length range. The search length range starts with 2, because strings of lengths 0 and 1 are already queried. It ends with maximum counterexample length, either given by the user, or calculated from the maximum number of counterexample searches, whichever shorter.
+The implementation here, however, only assumes a black box teacher _T_ that can only answer membership queries. As a result, _T_ can be any arbitrary function that takes a string as input and returns True if the string is accepted by the target language or False otherwise. Counterexamples are found through exhaustive search within a finite length range. The search length range starts with 2, because strings of lengths 0 and 1 are already queried. It ends with a maximum counterexample length, either given by the user, or calculated from the maximum number of counterexample searches, whichever shorter.
 
 
 
@@ -62,7 +62,7 @@ Once a DFA is initialized, you can use it to recognize a string or visualize the
 
 ## Suggestions
 
-Since the search for counterexamples is done exhaustively and bound by a maximum counterexample length, that means that the current implementation can infer the right DFA when the minimum length of the true counterexample(s) exceeds the maximum counterexample length, either given or estimated. To understand this more vividly, the following plot shows the maximum counterexample length searchable when the alphabet size and the maximum number of searches vary.
+Since the search for counterexamples is done exhaustively and bound by a maximum counterexample length, that means that the current implementation cannot infer the right DFA when the minimum length of the true counterexample(s) exceeds the maximum counterexample length, either given or estimated. To understand this more vividly, the following plot shows the maximum counterexample length searchable when the alphabet size and the maximum number of searches vary.
 
 <img src="imgs/max_ce_len.png" width="900" height="500">
 
@@ -70,8 +70,8 @@ Since the search for counterexamples is done exhaustively and bound by a maximum
 
 **Rule of thumb**: 
 
-- If you know the minimum number of states for the target DFA or the minimum length of the longest counterexample, please set `max_ce_len` accordingly when using `lstar` function. In this case, also calculate the maximum number of searches needed using the Eq. (1) and put a larger number to `max_ce_searches` (which only defaults to 1e+5), such that the algorithm will reach the maximum counterexample len as desired. Or simply put a unrealistically large number to `max_ce_searches`. The algorithm will always choose the shorter maximum counterexample length to search. 
+- If you know the minimum number of states for the target DFA or the minimum length of the counterexample(s), please set `max_ce_len` accordingly when using `lstar` function. In this case, also calculate the maximum number of searches needed using the Eq. (1) and put a larger number to `max_ce_searches` (which only defaults to 1e+5), such that the algorithm will reach the maximum counterexample len as desired. Or simply put a unrealistically large number to `max_ce_searches`. The algorithm will always choose the shorter maximum counterexample length to search. 
 
 <img src="imgs/Eq1.png">
 
-- In case you have no information regarding the minimum number of states for the target DFA, just do some trials and errors. Start with a small `max_ce_searches`, and increase it gradually. Alternatively, you can also set `max_ce_searches` to an extremely large number and increase the `max_ce_len` incrementally. Since the number of searches is a exponential function of the `max_ce_len` with the alphabet size as its base, so maybe the former approach is better!
+- In case you have no information about the minimum number of states for the target DFA, just do some trials and errors. Start with a small `max_ce_searches`, and increase it gradually. Alternatively, you can also set `max_ce_searches` to an extremely large number and increase the `max_ce_len` incrementally. Since the number of searches is a exponential function of the `max_ce_len` with the alphabet size as its base, so maybe the former approach is better because it causes less unnecessary searches!
