@@ -20,14 +20,14 @@ The _L_* algorithm is implemented in the `Lstar.py` file, which also contains a 
 # by default, max_ce_len=None, and max_ce_searches=1e+5
 > table = lstar(alphabet, T, max_ce_len=None, max_ce_searches=1e+5)
 > print(table.dfa) # print the contents of the DFA, but this may be a lot!
-> table.dfa.visualize("ababbaa->bbbaaa", format="pdf") # visualize the DFA and save it as "ababbaa->bbbaaa.pdf"
+> table.dfa.visualize("ababbaa->bbbaaa", format="png") # visualize the DFA and save it as "ababbaa->bbbaaa.png". 
 ```
 
  
 
 The visualization of the example code above is shown below:
 
-<img src="imgs/ababbaa->bbbaaa.pdf">
+<img src="imgs/ababbaa->bbbaaa.png">
 
 
 
@@ -38,6 +38,7 @@ The implementation also comes with a simple class method for building a DFA. The
 ```python3
 > from DFA import DFA
 > alphabet = "ab"
+> init_state = "λ"
 > final_states = ["λ"]
 > states = set(["λ", "a", "b", "ab"])
 # {current state: {input symbol: next state, ...}, ...}
@@ -54,10 +55,10 @@ Once a DFA is initialized, you can use it to recognize a string or visualize the
 
 ```python3
 > dfa.recognize("ababa") # check the membership of a string => False
-> dfa.visualize("even_a_even_b", format="pdf") # visualize the dfa 
+> dfa.visualize("even_a_even_b", format="png") # visualize the dfa. By default, format="pdf"
 ```
 
-<img src="imgs/even_a_even_b.pdf">
+<img src="imgs/even_a_even_b.png">
 
 ## Suggestions
 
